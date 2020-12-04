@@ -58,7 +58,7 @@ struct PassportData {
 
 	bool PidIsValid() {
 		std::string val = data["pid"];
-		std::regex regexForColor("^\d{9}$");
+		std::regex regexForColor("^\\d{9}$");
 		return std::regex_search(val, regexForColor);
 	}
 };
