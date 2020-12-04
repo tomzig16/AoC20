@@ -21,6 +21,8 @@ int FirstPart(std::vector<std::string> inputs) {
 
 long long SecondPart(std::vector<std::string> inputs, int moveRight, int moveDown) {
 	if (moveRight == -1) {
+		// Instead of this -1 logic, should have probably reused part 1, 
+		// but I decided to leave part 1 as is without modifications
 		long long result = 1;
 		result *= SecondPart(inputs, 1, 1);
 		result *= SecondPart(inputs, 3, 1);
