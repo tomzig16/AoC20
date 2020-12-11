@@ -25,6 +25,8 @@ int FirstPart(std::vector<int> inputs) {
 }
 
 
+// Very bad implementation, took 3 hours to find an answer.
+// Needs at least caching
 std::vector<int> inputsForPart2;
 long long RecursivePart2(int index) {
     long long result = 0;
