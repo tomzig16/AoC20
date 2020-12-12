@@ -1,8 +1,8 @@
 #include <iostream>
 #include <vector>
 #include <string>
-#define _USE_MATH_DEFINES
-#include <math.h>
+//#define _USE_MATH_DEFINES
+//#include <math.h>
 #include "../HelperFunctions.h"
 
 enum FacingDirections {
@@ -60,27 +60,26 @@ struct ShipData {
             y = y + (waypointY * units);
         }
         else {
-            // Can't rely on old direction because in case if waypoint moves to another quarter
-            // direction will still remain the same - incorrect one.
+            if (action == 'R') { units = -units; }
+            int nOfDegrees = ((units + 360) % 360);
+            int oldWPX = waypointX, oldWPY = waypointY;
 
-            //radians = (degrees * pi) / 180;
-
-            int xQuarter = std::cos((units * M_PI) / 180);
-            int yQuarter = std::sin((units * M_PI) / 180);
-
-            int lastQuarter = 0;
-            if (waypointX > 0 && waypointY > 0) lastQuarter = 0;
-            if (waypointX < 0 && waypointY > 0) lastQuarter = 1;
-            if (waypointX < 0 && waypointY < 0) lastQuarter = 2;
-            if (waypointX > 0 && waypointY < 0) lastQuarter = 3;
-            int newQuarter = action == 'L' ? lastQuarter + (units / 90) : lastQuarter - (units / 90);
-            if (newQuarter > 3) newQuarter = newQuarter % 4;
-            // Actual spin
-
-            if (waypointX > 0 && waypointY > 0) lastQuarter = 0;
-            if (waypointX < 0 && waypointY > 0) lastQuarter = 1;
-            if (waypointX < 0 && waypointY < 0) lastQuarter = 2;
-            if (waypointX > 0 && waypointY < 0) lastQuarter = 3;
+            switch (nOfDegrees) {
+            case 0:
+                break;
+            case 90:
+                waypointX = -oldWPY;
+                waypointY = oldWPX;
+                break;
+            case 180:
+                waypointX = -waypointX;
+                waypointY = -waypointY;
+                break;
+            case 270:
+                waypointX = oldWPY;
+                waypointY = -oldWPX;
+                break;
+            }
         }
     }
 };
@@ -121,8 +120,6 @@ int FirstPart(std::vector<std::pair<char, int>> instrArray) {
 }
 
 int SecondPart(std::vector<std::pair<char, int>> instrArray) {
-    // @TODO
-    return 1;
     ShipData shipData;
     for (std::pair<char, int> singleInstruction : instrArray) {
         if (singleInstruction.first == 'N') {
@@ -138,7 +135,7 @@ int SecondPart(std::vector<std::pair<char, int>> instrArray) {
             shipData.waypointX -= singleInstruction.second;
         }
         else {
-            shipData.DoShipAction(singleInstruction.first, singleInstruction.second);
+            shipData.DoShipActionWithWaypoint(singleInstruction.first, singleInstruction.second);
         }
     }
     return std::abs(shipData.x) + std::abs(shipData.y);
